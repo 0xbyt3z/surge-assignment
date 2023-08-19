@@ -7,6 +7,15 @@ services:
       - 3000:3000
     volumes:
       - surge:/data/web
+  db:
+    image: mariadb:latest
+    ports:
+      - 3307:3307
+    volumes:
+      - surge:/data/db
+    environment:
+      - MYSQL_TCP_PORT=3307
+      - MARIADB_ROOT_PASSWORD=root
 
 volumes:
   surge:
