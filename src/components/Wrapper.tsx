@@ -7,7 +7,9 @@ function Wrapper({ children }: { children: ReactNode }) {
   return (
     <>
       <SessionProvider>
-        <div>{children}</div>
+        <div className="w-screen h-auto flex justify-center">
+          <div className="w-1/3 h-auto">{children}</div>
+        </div>
       </SessionProvider>
     </>
   );

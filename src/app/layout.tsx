@@ -2,6 +2,7 @@ import Wrapper from "@/components/Wrapper";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,9 +14,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <Wrapper>
-        <body className={inter.className}>{children}</body>
-      </Wrapper>
+      <body className={cn("w-screen h-auto", inter.className)}>
+        <Wrapper>{children}</Wrapper>
+      </body>
     </html>
   );
 }
