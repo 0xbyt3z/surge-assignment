@@ -1,22 +1,22 @@
-import NextAuth from "next-auth";
-import CredentialProvider from "next-auth/providers/credentials";
+import NextAuth from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
 
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import { prisma } from '@/lib/prisma'
 
-export const authOptions = {
+export default NextAuth({
   adapter: PrismaAdapter(prisma),
-  // Configure one or more authentication providers
   providers: [
-    CredentialProvider({
-      name: "Sign in With Username and Password",
+    CredentialsProvider({
+      // The name to display on the sign in form (e.g. "Sign in with...")
+      name: 'Credentials',
 
       async authorize(credentials, req) {
         // Find the user wher email == req.body.email
-        const { email, password } = req.body;
-        const user = await prisma.user.findUnique({
+        const { key, password } = req.body
+        const user = await prisma.user.findFirst({
           where: {
-            AND: [{ email: email }, { pass: password }],
+            AND: [{ OR: [{ email: key }, { handle: key }] }, { password }],
           },
           select: {
             id: true,
@@ -24,13 +24,13 @@ export const authOptions = {
             name: true,
             image: true,
           },
-        });
+        })
         if (user) {
           // Any object returned will be saved in `user` property of the JWT
-          return user;
+          return user
         } else {
           // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+          return null
 
           // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
         }
@@ -42,34 +42,51 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/auth/signin",
-    signOut: "/auth/signout",
-    error: "/auth/error", // Error code passed in query string as ?error=
-    newUser: "/newuser", // New users will be directed here on first sign in (leave the property out if not of interest)
+    signIn: '/auth/signin',
+    signOut: '/auth/signout',
+    error: '/auth/error', // Error code passed in query string as ?error=
+    verifyRequest: '/auth/verify-request', // (used for check email message)
   },
   callbacks: {
     async jwt({ token, account, user, isNewUser }) {
       if (account?.accessToken) {
-        token.accessToken = account.accessToken;
+        token.accessToken = account.accessToken
       }
       if (user) {
-        token.user.id = user.id;
+        token.uid = user.id
+        token.privilleges = user.privilleges
       }
       if (isNewUser) {
-        token.isNewUser = isNewUser;
+        token.isNewUser = isNewUser
       }
-      return token;
+      return token
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
-      session.uid = token.uid;
-      return session;
+      session.accessToken = token.accessToken
+      session.user.id = token.uid
+      session.privilleges = token.privilleges
+      return session
     },
-    session: {
-      strategy: "jwt",
+    async signIn({ user, account, profile, email }) {
+      const isAllowedToSignIn = true
+      if (isAllowedToSignIn) {
+        return true
+      } else {
+        // Return false to display a default error message
+        return '/unauthorized'
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
+    redirect: async (url, _baseUrl) => {
+      if (url === '/user') {
+        return Promise.resolve('/')
+      }
+      return Promise.resolve('/')
     },
   },
-};
-
-export default NextAuth(authOptions);
+  session: {
+    strategy: 'jwt',
+  },
+})
