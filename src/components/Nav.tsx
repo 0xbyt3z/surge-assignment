@@ -1,9 +1,9 @@
 import { data } from '@/lib/data'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { Button } from './ui/button'
 import { useRouter } from 'next/navigation'
 
@@ -27,13 +27,11 @@ function Nav() {
               <DropdownMenu>
                 <DropdownMenuTrigger className="h-8 w-8 rounded-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-500  to-green-300 outline-none"></DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>
-                    Logged in as : <span>{session?.user.name?.split(' ')[0]}</span>
+                  <DropdownMenuItem className="flex flex-col items-start">
+                    <span className="text-xs text-gray-500">Logged in as :</span> <span>{session?.user.name?.split(' ')[0]}</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Logout</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>

@@ -3,6 +3,7 @@
 import { SessionProvider } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 import Nav from './Nav'
+import { Toaster } from 'react-hot-toast'
 
 function Wrapper({ children }: { children: ReactNode }) {
   return (
@@ -14,6 +15,7 @@ function Wrapper({ children }: { children: ReactNode }) {
             {children}
           </div>
         </div>
+        <Toaster toastOptions={{ position: 'bottom-right', duration: 5000 }} />
       </SessionProvider>
     </>
   )
