@@ -14,8 +14,8 @@ export default async function handler(req, res) {
       const posts = await prisma.post.findMany({
         cursor: { id: cursor },
         take: limit,
+        orderBy: [{ likecount: 'desc' }, { date: 'desc' }],
         skip: 1,
-        orderBy: [{ date: 'desc' }, { likecount: 'desc' }],
         include: {
           user: { select: { name: true, handle: true } },
           LikeRef: { where: { likedBy: session?.user.id }, select: { likedBy: true } },
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     } else {
       const posts = await prisma.post.findMany({
         take: limit,
-        orderBy: [{ date: 'desc' }, { likecount: 'desc' }],
+        orderBy: [{ likecount: 'desc' }, { date: 'desc' }],
         include: {
           user: { select: { name: true, image: true, handle: true } },
           LikeRef: { where: { likedBy: session?.user.id }, select: { likedBy: true } },

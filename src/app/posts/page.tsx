@@ -68,6 +68,7 @@ function PostsPage() {
   }
 
   useEffect(() => {
+    let _ref = ref.current
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsIntersecting(entry.isIntersecting)
@@ -80,7 +81,7 @@ function PostsPage() {
     }
 
     return () => {
-      observer.unobserve(ref.current!)
+      observer.unobserve(_ref!)
     }
   }, [])
 
@@ -96,7 +97,7 @@ function PostsPage() {
 
   return (
     <>
-      <div className="z-10 h-full w-full lg:px-10">
+      <div className="z-10 h-full w-full">
         <TopBar />
 
         <div id="scroll-area" className="hide-scroll2 h-[80vh] overflow-y-scroll ">
@@ -183,7 +184,7 @@ const PostCard = ({ data }: { data: z.infer<typeof postSchema> }) => {
   const DAY_MILLISECONDS = 1000 * 60 * 60 * 24
 
   async function handleRemoveLike() {
-    const res = await fetch('/api/posts/removelike', {
+    const res = await fetch('/api/posts/remove-like', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ pId: data.id, likedBy: session?.user.id }),

@@ -7,6 +7,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { Button } from './ui/button'
 import { useRouter } from 'next/navigation'
 import FirstLetterLogo from './firstletterlogo'
+import Link from 'next/link'
 
 function Nav() {
   const { data: session, status } = useSession()
@@ -29,9 +30,14 @@ function Nav() {
                 <DropdownMenuTrigger className="outline-none">
                   <FirstLetterLogo />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent className="right-0">
                   <DropdownMenuItem className="flex flex-col items-start">
                     <span className="text-xs text-gray-500">Logged in as :</span> <span>{session?.user.name?.split(' ')[0]}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={'/profile'} className="h-full w-full">
+                      Profile
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
