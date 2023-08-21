@@ -11,6 +11,8 @@ import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
+import ReCAPTCHA from 'react-google-recaptcha'
+import { useEffect, useRef, useState } from 'react'
 
 const formSchema = z.object({
   handle: z.string().min(2, {
@@ -20,16 +22,51 @@ const formSchema = z.object({
 })
 
 export default function LoginPAge() {
+  const [state, setState] = useState<{ value: any; callback: any; load: boolean; expired: any }>({ value: '', callback: 'not fired', expired: 'false', load: false })
+  const router = useRouter()
+  const _reCaptchaRef = useRef()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const t = toast.loading('Please Wait')
+    if (state.value == '') {
+      toast.error('Please check the reCaptcha', { id: t, position: 'top-center' })
+      return
+    }
     //key can be either the email or the handle of the user
-    signIn('credentials', { redirect: true, callbackUrl: '/', key: values.handle, password: values.password }).catch(error => console.log(error))
+    signIn('credentials', { redirect: false, key: values.handle, password: values.password })
+      .catch(error => console.log(error))
+      .then(res => {
+        if (res?.status == 401) {
+          toast.error('Invalid Credentials', { id: t })
+        } else {
+          //use location.replace() instead
+          //router.replace() does not refresh page content
+          location.replace('/posts')
+          toast.success('Logged in', { id: t })
+        }
+      })
   }
 
+  function handleCaptchaChange(value: any) {
+    console.log('Captcha value:', value)
+    setState({ ...state, value })
+    // if value is null recaptcha expired
+    if (value === null) setState({ ...state, expired: 'true' })
+  }
+
+  function asyncScriptOnLoad() {
+    setState({ ...state, callback: 'called!' })
+    console.log('scriptLoad - reCaptcha Ref-', _reCaptchaRef)
+  }
+  useEffect(() => {
+    setTimeout(() => {
+      setState({ ...state, load: true })
+    }, 1500)
+    console.log('didMount - reCaptcha Ref-', _reCaptchaRef)
+  }, [])
   return (
     <div className="flex">
       <div className="fixed right-0 top-16 z-0 h-screen w-screen bg-gradient-to-t from-cyan-400 via-white   to-white"></div>
@@ -66,6 +103,11 @@ export default function LoginPAge() {
               <Button type="submit" className="w-full">
                 Login
               </Button>
+              {state.load && (
+                <div className="w-full">
+                  <ReCAPTCHA theme="dark" ref={_reCaptchaRef} sitekey={'6Le2H7YnAAAAADT2wHAfyWsbUIYS6_gdG8d47IRu'} onChange={handleCaptchaChange} asyncScriptOnLoad={asyncScriptOnLoad} />
+                </div>
+              )}
             </form>
           </Form>
           <span className="mt-5 w-full text-left text-xs text-gray-500">

@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma, states } from '@/lib/prisma'
 import z from 'zod'
-import { authOptions } from '../auth/[...nextauth]'
+import { getSession } from 'next-auth/react'
 import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions)
 
   const { url } = req.body

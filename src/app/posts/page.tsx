@@ -12,8 +12,8 @@ import { z } from 'zod'
 import { toast } from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { log } from 'console'
-import { useInfiniteScrollCursor } from '@/lib/store'
+import FirstLetterLogo from '@/components/firstletterlogo'
+import { cn } from '@/lib/utils'
 
 const postSchema = z.object({
   id: z.string(),
@@ -25,12 +25,14 @@ const postSchema = z.object({
     image: z.string(),
     handle: z.string(),
   }),
+  LikeRef: z.array(z.any()),
 })
 
 function PostsPage() {
   const [posts, setPosts] = useState<z.infer<typeof postSchema>[]>([])
   const [isEnd, setIsEnd] = useState<boolean>(false)
   const [cursor, setCursor] = useState<string>()
+  const { data: session, status } = useSession()
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -38,8 +40,10 @@ function PostsPage() {
 
   async function fetchData() {
     if (isEnd) {
+      // exit the function when all the posts are fetched
       return
     }
+
     const res = await fetch('/api/posts/fetch', {
       method: 'POST',
       headers: {
@@ -48,13 +52,23 @@ function PostsPage() {
       body: JSON.stringify({ cursor }),
     }).then(res => res.json())
     setCursor(res.cursor)
-    if (res.isEnd) {
+    if (res.isEnd || res.code == 500) {
+      //mark the end of the scroll
       setIsEnd(true)
     }
-    if (res.posts.length > 0) setPosts(state => [...state, ...res.posts])
+
+    if (res.posts != undefined) {
+      if (posts.length > 0) {
+        setPosts(state => [...state, ...res.posts])
+      } else {
+        //prevents the first fetched items from repeating
+        setPosts([...res.posts])
+      }
+    }
   }
 
   useEffect(() => {
+    let _ref = ref.current
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsIntersecting(entry.isIntersecting)
@@ -67,7 +81,7 @@ function PostsPage() {
     }
 
     return () => {
-      observer.unobserve(ref.current!)
+      observer.unobserve(_ref!)
     }
   }, [])
 
@@ -83,15 +97,15 @@ function PostsPage() {
 
   return (
     <>
-      <div className="z-10 h-full w-full lg:px-10">
+      <div className="z-10 h-full w-full">
         <TopBar />
 
         <div id="scroll-area" className="hide-scroll2 h-[80vh] overflow-y-scroll ">
           {posts.map(i => (
             <PostCard key={i.id} data={i} />
           ))}
-          <div>
-            <span id="scroll-end" ref={ref}>
+          <div className="w-full animate-pulse text-center text-sm text-gray-600">
+            <span id="scroll-end" ref={ref} className="mt-5">
               {isEnd ? 'You Viewed all the posts' : 'Loading'}
             </span>
           </div>
@@ -165,8 +179,41 @@ const TopBar = () => {
 }
 
 const PostCard = ({ data }: { data: z.infer<typeof postSchema> }) => {
+  const [isliked, setIsLiked] = useState<boolean>()
+  const { data: session } = useSession()
   const DAY_MILLISECONDS = 1000 * 60 * 60 * 24
 
+  async function handleRemoveLike() {
+    const res = await fetch('/api/posts/remove-like', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pId: data.id, likedBy: session?.user.id }),
+    }).then(res => res.json())
+
+    if (res.code == 200) {
+      setIsLiked(false)
+    }
+
+    data.likecount--
+  }
+
+  async function handleLikeButtonClick() {
+    if (isliked) {
+      handleRemoveLike()
+      return
+    }
+    const res = await fetch('/api/posts/like', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pId: data.id, likedBy: session?.user.id }),
+    }).then(res => res.json())
+
+    if (res.code == 200) {
+      setIsLiked(true)
+    }
+
+    data.likecount++
+  }
   function getRelativeTime(timestamp: any) {
     const rtf = new Intl.RelativeTimeFormat('en', {
       numeric: 'auto',
@@ -175,15 +222,20 @@ const PostCard = ({ data }: { data: z.infer<typeof postSchema> }) => {
 
     return rtf.format(daysDifference, 'day')
   }
+  useEffect(() => {
+    if (data.LikeRef.length > 0) {
+      setIsLiked(true)
+    }
+  }, [])
   return (
     <>
       <Card className="mb-1 flex h-auto w-full flex-col rounded-none border-[1px]  border-b-0 shadow-none">
         {/* header */}
         <div className="flex h-12 items-center justify-start border-0 border-b-[1px] px-2">
-          <div className="flex h-8 w-8 items-center justify-start">
-            <div className="h-full w-full rounded-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-500  to-green-300"></div>
-          </div>
-          <div className="flex h-8 w-fit flex-col pl-2">
+          {/* <div className="flex h-8 w-8 items-center justify-start">
+            <FirstLetterLogo />
+          </div> */}
+          <div className="flex h-8 w-fit flex-col ">
             <span className="text-sm font-medium">{data.user.name}</span>
             <span className="-mt-1 text-xs font-light">{data.user.handle}</span>
           </div>
@@ -194,8 +246,15 @@ const PostCard = ({ data }: { data: z.infer<typeof postSchema> }) => {
         </div>
         {/* bottom bar */}
         <div className="flex h-12 items-center justify-between border-0 border-b-[1px] px-1">
-          <div className="flex h-10 w-1/3 items-center justify-start">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mx-2 my-2 h-6 w-6">
+          <div onClick={handleLikeButtonClick} className="flex h-10 w-1/3 items-center justify-start">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className={cn('mx-2 my-2 h-6 w-6 fill-none stroke-slate-900', isliked ? 'fill-pink-500 stroke-pink-500' : 'fill-none stroke-slate-900')}
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
