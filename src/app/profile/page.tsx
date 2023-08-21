@@ -9,6 +9,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
+import { Label } from '@/components/ui/label'
+import { DialogClose } from '@radix-ui/react-dialog'
 
 const formSchema = z
   .object({
@@ -66,6 +68,26 @@ function ProfilePage() {
     }
   }
 
+  async function handleSubmit() {
+    let url = (document.getElementById('image-url') as HTMLInputElement).value
+
+    let t = toast.loading('Please wait')
+
+    const res = await fetch('/api/user/change-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ image: url, id: data.id }),
+    }).then(res => res.json())
+
+    if (res.code == 200) {
+      toast.success('Succesfull', { id: t })
+    } else {
+      toast.error('Something went wrong', { id: t })
+    }
+  }
+
   useEffect(() => {
     if (status == 'authenticated') {
       fetchUser()
@@ -84,6 +106,38 @@ function ProfilePage() {
         {/* details section */}
         {data && (
           <div className="flex h-auto w-full flex-col pt-10">
+            <Dialog>
+              <DialogTrigger>
+                <div className="mb-10 h-16 w-16 rounded-full bg-gray-300 hover:bg-gray-400">
+                  <img src={session?.user.image?.toString()} alt="" />
+                </div>
+              </DialogTrigger>
+              <DialogContent className="remove-radix-close-icon">
+                <DialogHeader>
+                  {/* form area */}
+                  <form onSubmit={handleSubmit}>
+                    <div className="flex h-auto w-full flex-col">
+                      <Label htmlFor="image-url" className="mb-2">
+                        Image URL
+                      </Label>
+                      <Input required placeholder="Eg: https://images.com/sunset-landscape.png" id="image-url" name="imageUrl" />
+
+                      <div className="mt-5 flex space-x-2">
+                        <Button variant={'outline'} type="submit">
+                          Change
+                        </Button>
+
+                        <DialogClose asChild>
+                          <Button variant={'ghost'} type="button">
+                            Cancel
+                          </Button>
+                        </DialogClose>
+                      </div>
+                    </div>
+                  </form>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
             <div className="mb-5 flex flex-col">
               <span className="text-xs">Full Name</span>
               <span className="text-xl">{data.name}</span>
@@ -105,12 +159,12 @@ function ProfilePage() {
                     Change Password
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="">
                   <DialogHeader>
                     <DialogTitle>Change the Password</DialogTitle>
                     <DialogDescription>This action cannot be undone.</DialogDescription>
                     <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="flex-c flex space-y-2">
                         <FormField
                           control={form.control}
                           name="current"
