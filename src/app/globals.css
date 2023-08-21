@@ -1,9 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
-
-
 
 @layer base {
   :root {
@@ -28,7 +25,7 @@
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -52,7 +49,12 @@
   }
 }
 
-
+.gradient-background {
+  background-color: rgb(190, 242, 100);
+  background-image: radial-gradient(at 2% 23%, rgb(241, 245, 249) 0, transparent 78%), radial-gradient(at 1% 73%, rgb(8, 145, 178) 0, transparent 73%),
+    radial-gradient(at 86% 92%, rgb(162, 28, 175) 0, transparent 85%), radial-gradient(at 16% 83%, rgb(234, 179, 8) 0, transparent 1%),
+    radial-gradient(at 87% 76%, rgb(34, 211, 238) 0, transparent 30%), radial-gradient(at 28% 26%, rgb(110, 231, 183) 0, transparent 19%);
+}
 
 @layer base {
   * {
@@ -61,4 +63,23 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scroll {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+
+
+.remove-radix-close-icon > button:has(svg){
+  @apply hidden;
 }

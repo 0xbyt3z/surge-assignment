@@ -2,7 +2,7 @@
 
 import { SessionProvider } from 'next-auth/react'
 import React, { ReactNode } from 'react'
-import Nav from './Nav'
+import Nav from './nav'
 import { Toaster } from 'react-hot-toast'
 
 function Wrapper({ children }: { children: ReactNode }) {
@@ -10,7 +10,7 @@ function Wrapper({ children }: { children: ReactNode }) {
     <>
       <SessionProvider>
         <div className="flex h-auto w-screen flex-col items-center">
-          <div className="h-auto w-1/3">
+          <div className="h-auto w-[350px] lg:w-1/3">
             <Nav />
             {children}
           </div>

@@ -47,6 +47,27 @@ model User {
   password      String
   accounts      Account[]
   sessions      Session[]
+  Post          Post[]
+  LikeRef       LikeRef[]
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  url       String    @db.Text
+  uId       String
+  user      User      @relation(fields: [uId], references: [id], onDelete: Cascade)
+  date      DateTime  @default(now())
+  likecount Int       @default(0)
+  LikeRef   LikeRef[]
+}
+
+model LikeRef {
+  id        String   @id @default(cuid())
+  pId       String
+  post      Post     @relation(fields: [pId], references: [id], onDelete: Cascade)
+  likedBy   String
+  likedUser User     @relation(fields: [likedBy], references: [id])
+  date      DateTime @default(now())
 }
 
 model VerificationToken {

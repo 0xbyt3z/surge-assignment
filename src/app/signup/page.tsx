@@ -63,17 +63,46 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex h-[70vh] w-full flex-col items-center justify-center">
-      <div className="flex w-72 flex-col">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="flex gap-x-4">
+    <div className="flex">
+      <div className="fixed right-0 top-16 z-0 h-screen w-screen bg-gradient-to-t from-emerald-500 via-white   to-white"></div>
+      <div className="z-40 flex h-[70vh] w-full flex-col items-center justify-center">
+        <div className="flex w-72 flex-col">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="flex gap-x-4">
+                <FormField
+                  control={form.control}
+                  name="fname"
+                  render={({ field }) => (
+                    <FormItem className="w-1/2">
+                      <FormLabel className="text-gray">First Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lname"
+                  render={({ field }) => (
+                    <FormItem className="w-1/2">
+                      <FormLabel className="text-gray">Last Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="fname"
+                name="handle"
                 render={({ field }) => (
-                  <FormItem className="w-1/2">
-                    <FormLabel className="text-gray">First Name</FormLabel>
+                  <FormItem>
+                    <FormLabel className="text-gray">Username</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -83,10 +112,10 @@ export default function SignupPage() {
               />
               <FormField
                 control={form.control}
-                name="lname"
+                name="email"
                 render={({ field }) => (
-                  <FormItem className="w-1/2">
-                    <FormLabel className="text-gray">Last Name</FormLabel>
+                  <FormItem>
+                    <FormLabel className="text-gray">Email</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -94,70 +123,44 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
-            </div>
-            <FormField
-              control={form.control}
-              name="handle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray">Username</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray">Email</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray">Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirm"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray">Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full">
-              Sign Up
-            </Button>
-          </form>
-        </Form>
-        <span className="mt-5 w-full text-left text-xs text-gray-500">
-          Already have an account?.
-          <Link href={'/login'} className="hover:text-blue-500">
-            Log in
-          </Link>
-        </span>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray">Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirm"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray">Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full">
+                Sign Up
+              </Button>
+            </form>
+          </Form>
+          <span className="mt-5 w-full text-left text-xs text-gray-500">
+            Already have an account?.
+            <Link href={'/login'} className="hover:text-blue-500">
+              Log in
+            </Link>
+          </span>
+        </div>
       </div>
     </div>
   )

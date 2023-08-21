@@ -4,7 +4,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 
 import { prisma } from '@/lib/prisma'
 
-export default NextAuth({
+export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -42,7 +42,7 @@ export default NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: '/auth/signin',
+    signIn: '/login',
     signOut: '/auth/signout',
     error: '/auth/error', // Error code passed in query string as ?error=
     verifyRequest: '/auth/verify-request', // (used for check email message)
@@ -89,4 +89,6 @@ export default NextAuth({
   session: {
     strategy: 'jwt',
   },
-})
+}
+
+export default NextAuth(authOptions)
