@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { signOut, useSession } from 'next-auth/react'
 import { Button } from './ui/button'
 import { useRouter } from 'next/navigation'
+import FirstLetterLogo from './firstletterlogo'
 
 function Nav() {
   const { data: session, status } = useSession()
@@ -25,7 +26,9 @@ function Nav() {
           {status == 'authenticated' ? (
             <>
               <DropdownMenu>
-                <DropdownMenuTrigger className="h-8 w-8 rounded-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-500  to-green-300 outline-none"></DropdownMenuTrigger>
+                <DropdownMenuTrigger className="outline-none">
+                  <FirstLetterLogo />
+                </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem className="flex flex-col items-start">
                     <span className="text-xs text-gray-500">Logged in as :</span> <span>{session?.user.name?.split(' ')[0]}</span>

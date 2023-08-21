@@ -12,8 +12,7 @@ import { z } from 'zod'
 import { toast } from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { log } from 'console'
-import { useInfiniteScrollCursor } from '@/lib/store'
+import FirstLetterLogo from '@/components/firstletterlogo'
 
 const postSchema = z.object({
   id: z.string(),
@@ -38,6 +37,7 @@ function PostsPage() {
 
   async function fetchData() {
     if (isEnd) {
+      // exit the function when all the posts are fetched
       return
     }
     const res = await fetch('/api/posts/fetch', {
@@ -45,13 +45,23 @@ function PostsPage() {
       headers: {
         'Content-Type': 'application/json',
       },
+      cache: 'force-cache',
       body: JSON.stringify({ cursor }),
     }).then(res => res.json())
     setCursor(res.cursor)
-    if (res.isEnd) {
+    if (res.isEnd || res.code == 500) {
+      //mark the end of the scroll
       setIsEnd(true)
     }
-    if (res.posts.length > 0) setPosts(state => [...state, ...res.posts])
+
+    if (res.posts != undefined) {
+      if (posts.length > 0) {
+        setPosts(state => [...state, ...res.posts])
+      } else {
+        //prevents the first fetched items from repeating
+        setPosts([...res.posts])
+      }
+    }
   }
 
   useEffect(() => {
@@ -90,8 +100,8 @@ function PostsPage() {
           {posts.map(i => (
             <PostCard key={i.id} data={i} />
           ))}
-          <div>
-            <span id="scroll-end" ref={ref}>
+          <div className="w-full animate-pulse text-center text-sm text-gray-600">
+            <span id="scroll-end" ref={ref} className="mt-5">
               {isEnd ? 'You Viewed all the posts' : 'Loading'}
             </span>
           </div>
@@ -180,10 +190,10 @@ const PostCard = ({ data }: { data: z.infer<typeof postSchema> }) => {
       <Card className="mb-1 flex h-auto w-full flex-col rounded-none border-[1px]  border-b-0 shadow-none">
         {/* header */}
         <div className="flex h-12 items-center justify-start border-0 border-b-[1px] px-2">
-          <div className="flex h-8 w-8 items-center justify-start">
-            <div className="h-full w-full rounded-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-500  to-green-300"></div>
-          </div>
-          <div className="flex h-8 w-fit flex-col pl-2">
+          {/* <div className="flex h-8 w-8 items-center justify-start">
+            <FirstLetterLogo />
+          </div> */}
+          <div className="flex h-8 w-fit flex-col ">
             <span className="text-sm font-medium">{data.user.name}</span>
             <span className="-mt-1 text-xs font-light">{data.user.handle}</span>
           </div>
