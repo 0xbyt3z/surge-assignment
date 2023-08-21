@@ -68,6 +68,8 @@ model LikeRef {
   likedBy   String
   likedUser User     @relation(fields: [likedBy], references: [id])
   date      DateTime @default(now())
+
+  @@unique([pId, likedBy])
 }
 
 model VerificationToken {

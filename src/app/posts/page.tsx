@@ -13,6 +13,7 @@ import { toast } from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import FirstLetterLogo from '@/components/firstletterlogo'
+import { cn } from '@/lib/utils'
 
 const postSchema = z.object({
   id: z.string(),
@@ -24,12 +25,14 @@ const postSchema = z.object({
     image: z.string(),
     handle: z.string(),
   }),
+  LikeRef: z.array(z.any()),
 })
 
 function PostsPage() {
   const [posts, setPosts] = useState<z.infer<typeof postSchema>[]>([])
   const [isEnd, setIsEnd] = useState<boolean>(false)
   const [cursor, setCursor] = useState<string>()
+  const { data: session, status } = useSession()
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -40,12 +43,12 @@ function PostsPage() {
       // exit the function when all the posts are fetched
       return
     }
+
     const res = await fetch('/api/posts/fetch', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'force-cache',
       body: JSON.stringify({ cursor }),
     }).then(res => res.json())
     setCursor(res.cursor)
@@ -175,8 +178,41 @@ const TopBar = () => {
 }
 
 const PostCard = ({ data }: { data: z.infer<typeof postSchema> }) => {
+  const [isliked, setIsLiked] = useState<boolean>()
+  const { data: session } = useSession()
   const DAY_MILLISECONDS = 1000 * 60 * 60 * 24
 
+  async function handleRemoveLike() {
+    const res = await fetch('/api/posts/removelike', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pId: data.id, likedBy: session?.user.id }),
+    }).then(res => res.json())
+
+    if (res.code == 200) {
+      setIsLiked(false)
+    }
+
+    data.likecount--
+  }
+
+  async function handleLikeButtonClick() {
+    if (isliked) {
+      handleRemoveLike()
+      return
+    }
+    const res = await fetch('/api/posts/like', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pId: data.id, likedBy: session?.user.id }),
+    }).then(res => res.json())
+
+    if (res.code == 200) {
+      setIsLiked(true)
+    }
+
+    data.likecount++
+  }
   function getRelativeTime(timestamp: any) {
     const rtf = new Intl.RelativeTimeFormat('en', {
       numeric: 'auto',
@@ -185,6 +221,11 @@ const PostCard = ({ data }: { data: z.infer<typeof postSchema> }) => {
 
     return rtf.format(daysDifference, 'day')
   }
+  useEffect(() => {
+    if (data.LikeRef.length > 0) {
+      setIsLiked(true)
+    }
+  }, [])
   return (
     <>
       <Card className="mb-1 flex h-auto w-full flex-col rounded-none border-[1px]  border-b-0 shadow-none">
@@ -204,8 +245,15 @@ const PostCard = ({ data }: { data: z.infer<typeof postSchema> }) => {
         </div>
         {/* bottom bar */}
         <div className="flex h-12 items-center justify-between border-0 border-b-[1px] px-1">
-          <div className="flex h-10 w-1/3 items-center justify-start">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mx-2 my-2 h-6 w-6">
+          <div onClick={handleLikeButtonClick} className="flex h-10 w-1/3 items-center justify-start">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className={cn('mx-2 my-2 h-6 w-6 fill-none stroke-slate-900', isliked ? 'fill-pink-500 stroke-pink-500' : 'fill-none stroke-slate-900')}
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
