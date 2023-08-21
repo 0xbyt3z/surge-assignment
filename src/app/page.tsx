@@ -1,7 +1,10 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
+  const router = useRouter()
   return (
     <>
       <div className="h-auto w-full">
@@ -15,7 +18,9 @@ export default function Home() {
           quam ut nulla tincidunt.
         </p>
 
-        <Button variant={'outline'}>Discover</Button>
+        <Button onClick={() => router.push('/posts')} variant={'outline'}>
+          View Posts
+        </Button>
       </div>
     </>
   )

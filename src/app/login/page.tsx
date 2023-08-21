@@ -31,47 +31,50 @@ export default function LoginPAge() {
   }
 
   return (
-    <div className="flex h-[50vh] w-full flex-col items-center justify-center">
-      <div className="flex w-64 flex-col">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="handle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray">Username</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray">Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-          </form>
-        </Form>
-        <span className="mt-5 w-full text-left text-xs text-gray-500">
-          Do not have an account?.
-          <Link href={'/signup'} className="hover:text-blue-500">
-            Create one.
-          </Link>
-        </span>
+    <div className="flex">
+      <div className="fixed right-0 top-16 z-0 h-screen w-screen bg-gradient-to-t from-cyan-400 via-white   to-white"></div>
+      <div className="z-40 flex h-[50vh] w-full flex-col items-center justify-center">
+        <div className="flex w-64 flex-col">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="handle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray">Username</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray">Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full">
+                Login
+              </Button>
+            </form>
+          </Form>
+          <span className="mt-5 w-full text-left text-xs text-gray-500">
+            Do not have an account?.
+            <Link href={'/signup'} className="hover:text-blue-500">
+              Create one.
+            </Link>
+          </span>
+        </div>
       </div>
     </div>
   )

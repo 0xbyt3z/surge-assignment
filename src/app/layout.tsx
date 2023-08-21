@@ -1,4 +1,4 @@
-import Wrapper from '@/components/Wrapper'
+import Wrapper from '@/components/wrapper'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="shortcut icon" href="/logo/tick-48.svg" type="image/svg" />
       </head>
-      <body className={cn('h-auto w-screen', inter.className)}>
+      <body className={cn('h-auto w-screen overflow-x-hidden', inter.className)}>
         <Wrapper>{children}</Wrapper>
       </body>
     </html>
