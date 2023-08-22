@@ -32,3 +32,10 @@ I faced to challanges during development process. They are,
 ## my own implementations
 - Infinite Scroll - Cursor based scroll fetch requests posts on demand.
 - Relative Time -  Relative time for posts based on Internationalization API.
+
+## software used
+- VS Code - Code editor
+- Postman - API testing
+- Terminator - Terminal
+- Docker - Virtualization Software
+- Firefox/Chrome - Web browsers
