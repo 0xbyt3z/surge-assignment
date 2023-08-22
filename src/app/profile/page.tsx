@@ -159,12 +159,12 @@ function ProfilePage() {
                     Change Password
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="">
-                  <DialogHeader>
+                <DialogContent className="flex w-10/12 flex-col items-start text-left lg:w-full">
+                  <DialogHeader className="text-left">
                     <DialogTitle>Change the Password</DialogTitle>
                     <DialogDescription>This action cannot be undone.</DialogDescription>
                     <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="flex-c flex space-y-2">
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-start space-y-2">
                         <FormField
                           control={form.control}
                           name="current"
