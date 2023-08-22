@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test'
 import { cookies } from '../../storage.json'
 
+const baseurl = process.env.BASE_URL ? process.env.BASE_URL : 'http://localhost:3000'
 //signup
 test('should signup a new user', async ({ page }) => {
-  await page.goto('http://localhost:3000/signup')
+  await page.goto(`${baseurl}/signup`)
 
   await page.getByLabel('First Name').fill('e2e')
   await page.getByLabel('Last Name').fill('test')
@@ -13,7 +14,7 @@ test('should signup a new user', async ({ page }) => {
   await page.getByLabel('Confirm').fill('!@#123AAAbbb')
   await page.getByRole('button', { name: 'Sign Up' }).click()
   try {
-    await page.waitForURL('http://localhost:3000/login', { timeout: 1000 })
+    await page.waitForURL(`${baseurl}/login`, { timeout: 1000 })
   } catch (error) {
     console.log('\tGuess the user is already!')
     test.skip()
@@ -29,44 +30,44 @@ test('login if recaptcha is disabled', async ({ page }) => {
     console.log('---------')
   }
 
-  await page.goto('http://localhost:3000/login')
+  await page.goto(`${baseurl}/login`)
 
   await page.getByLabel('Username').fill('e2e')
   await page.getByLabel('Password', { exact: true }).fill('!@#123AAAbbb')
   await page.locator('form').getByRole('button', { name: 'Login' }).click()
-  await page.waitForURL('http://localhost:3000/posts')
+  await page.waitForURL(`${baseurl}/posts`)
 
   await page.context().storageState({ path: 'storage.json' })
 })
 
 //protected rOutes
 test('visit protected page /posts without signin', async ({ page }) => {
-  await page.goto('http://localhost:3000/posts')
+  await page.goto(`${baseurl}/posts`)
 
-  await page.waitForURL('http://localhost:3000/login?callbackUrl=%2F')
+  await page.waitForURL(`${baseurl}/login?callbackUrl=%2F`)
 })
 
 test('visit protected page /posts signed in', async ({ page }) => {
   page.context().addCookies([...cookies])
-  await page.goto('http://localhost:3000/posts')
+  await page.goto(`${baseurl}/posts`)
 
-  if (page.url() == 'http://localhost:3000/login?callbackUrl=%2F') {
+  if (page.url() == `${baseurl}/login?callbackUrl=%2F`) {
     //failed the test if the user is redirected to the login page
     test.fail()
   }
 })
 
 test('visit protected page /profile without signin', async ({ page }) => {
-  await page.goto('http://localhost:3000/profile')
+  await page.goto(`${baseurl}/profile`)
 
-  await page.waitForURL('http://localhost:3000/login?callbackUrl=%2F')
+  await page.waitForURL(`${baseurl}/login?callbackUrl=%2F`)
 })
 
 test('visit protected page /profile signed in', async ({ page }) => {
   page.context().addCookies([...cookies])
-  await page.goto('http://localhost:3000/profile')
+  await page.goto(`${baseurl}/profile`)
 
-  if (page.url() == 'http://localhost:3000/login?callbackUrl=%2F') {
+  if (page.url() == `${baseurl}/login?callbackUrl=%2F`) {
     //failed the test if the user is redirected to the login page
     test.fail()
   }
@@ -75,14 +76,14 @@ test('visit protected page /profile signed in', async ({ page }) => {
 //profile
 test('check if the pages loads with data', async ({ page }) => {
   page.context().addCookies([...cookies])
-  await page.goto('http://localhost:3000/profile')
+  await page.goto(`${baseurl}/profile`)
 
   await page.getByText('Change Password').click()
 })
 
 test('open the password reset modal', async ({ page }) => {
   page.context().addCookies([...cookies])
-  await page.goto('http://localhost:3000/profile')
+  await page.goto(`${baseurl}/profile`)
 
   await page.getByText('Change Password').click()
 
@@ -91,7 +92,7 @@ test('open the password reset modal', async ({ page }) => {
 
 test('reset the password', async ({ page }) => {
   page.context().addCookies([...cookies])
-  await page.goto('http://localhost:3000/profile')
+  await page.goto(`${baseurl}/profile`)
 
   await page.getByText('Change Password').click()
 
@@ -106,5 +107,5 @@ test('reset the password', async ({ page }) => {
 
   await page.getByRole('button').filter({ hasText: 'Submit' }).click()
 
-  await page.waitForURL('http://localhost:3000/')
+  await page.waitForURL(`${baseurl}/`)
 })
