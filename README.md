@@ -39,3 +39,14 @@ I faced to challanges during development process. They are,
 - Terminator - Terminal
 - Docker - Virtualization Software
 - Firefox/Chrome - Web browsers
+
+## proofs
+### Github Actions
+![image](https://github.com/0xbyt3z/surge-assignment/assets/40062006/658fc06e-fbc2-45e7-be02-e4359b46d971)
+
+![image](https://github.com/0xbyt3z/surge-assignment/assets/40062006/c7bf54f3-7047-4fac-a9e6-8b890e14a57d)
+
+### Tests
+![Screenshot at 2023-08-22 15-22-16](https://github.com/0xbyt3z/surge-assignment/assets/40062006/cd8aa9ed-9570-4505-aa7b-e3c15dadaa6a)
+
+![Screenshot at 2023-08-22 15-27-25](https://github.com/0xbyt3z/surge-assignment/assets/40062006/ea4834bd-cf75-4f52-866c-5da92617d192)
