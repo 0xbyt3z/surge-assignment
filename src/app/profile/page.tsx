@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { Label } from '@/components/ui/label'
 import { DialogClose } from '@radix-ui/react-dialog'
+import Image from 'next/image'
 
 const formSchema = z
   .object({
@@ -109,7 +110,7 @@ function ProfilePage() {
             <Dialog>
               <DialogTrigger>
                 <div className="mb-10 h-16 w-16 rounded-full bg-gray-300 hover:bg-gray-400">
-                  <img src={session?.user.image?.toString()} alt="" />
+                  <Image src={`${session?.user.image}`} alt="" width={64} height={64} className="h-16 w-16 rounded-full" />
                 </div>
               </DialogTrigger>
               <DialogContent className="remove-radix-close-icon">
