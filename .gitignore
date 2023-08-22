@@ -7,6 +7,9 @@
 
 # testing
 /coverage
+/test-results/
+trace*.zip
+*.zip
 
 # next.js
 /.next/
