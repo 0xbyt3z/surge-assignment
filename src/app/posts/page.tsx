@@ -100,7 +100,7 @@ function PostsPage() {
       <div className="z-10 h-full w-full">
         <TopBar />
 
-        <div id="scroll-area" className="hide-scroll2 h-[80vh] overflow-y-scroll ">
+        <div id="scroll-area" className="hide-scroll h-[80vh] overflow-y-scroll ">
           {posts.map(i => (
             <PostCard key={i.id} data={i} />
           ))}
