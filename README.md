@@ -29,9 +29,11 @@ I faced challenges during the development process. They are,
 
 - **CI/CD pipelines** - I am used to  deploying applications on hosting services such as Vercel and Netlify using automatic deployment which does not require writing manual scripts. But I manage to work with Github Actions gaining a sound understanding.
 
-## my own implementations
+## features
 - Infinite Scroll - Cursor-based scroll fetch requests posts on demand.
 - Relative Time -  Relative time for posts based on Internationalization API.
+- Like/Removing a Like - Response behavior based on promises.
+- Posting - Users can post pictures using URLs to the images as the assignment does not encourage the usage of File Storages.
 
 ## software used
 - VS Code - Code Editor
