@@ -40,6 +40,14 @@ I faced to challanges during development process. They are,
 - Docker - Virtualization Software
 - Firefox/Chrome - Web browsers
 
+## Commands
+- <code>yarn dev</code> - Starts developement server (web)
+- <code>yarn test</code> - Run tests
+- <code>docker compose up --build</code> - Docker commands
+- <code>yarn studio</code> - Spin up prisma studio using .env.local and dev.prisma schema
+- <code>yarn db:push</code> - Push model changes to database using .env.local and dev.prisma
+- <code>yarn prisma db seed</code> - Seed the database
+
 ## proofs
 ### Github Actions
 ![image](https://github.com/0xbyt3z/surge-assignment/assets/40062006/658fc06e-fbc2-45e7-be02-e4359b46d971)
