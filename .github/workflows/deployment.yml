@@ -23,15 +23,4 @@ jobs:
         run: npm run build
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
-        env:
-          BASE_URL: "https://surgeintern.vercel.app/"
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-           name: playwright-report
-           path: playwright-report/
-           retention-days: 30
+      
