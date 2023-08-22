@@ -31,9 +31,11 @@ export default function LoginPAge() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const t = toast.loading('Please Wait')
-    if (state.value == '') {
-      toast.error('Please check the reCaptcha', { id: t, position: 'top-center' })
-      return
+    if (process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA == 'true') {
+      if (state.value == '') {
+        toast.error('Please check the reCaptcha', { id: t, position: 'top-center' })
+        return
+      }
     }
     //key can be either the email or the handle of the user
     signIn('credentials', { redirect: false, key: values.handle, password: values.password })
@@ -54,6 +56,7 @@ export default function LoginPAge() {
     console.log('Captcha value:', value)
     setState({ ...state, value })
     // if value is null recaptcha expired
+
     if (value === null) setState({ ...state, expired: 'true' })
   }
 
@@ -66,6 +69,8 @@ export default function LoginPAge() {
       setState({ ...state, load: true })
     }, 1500)
     console.log('didMount - reCaptcha Ref-', _reCaptchaRef)
+
+    console.log({ captcha: process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA })
   }, [])
   return (
     <div className="flex">
@@ -103,7 +108,7 @@ export default function LoginPAge() {
               <Button type="submit" className="w-full">
                 Login
               </Button>
-              {state.load && (
+              {process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA == 'true' && state.load && (
                 <div className="w-full">
                   <ReCAPTCHA theme="dark" ref={_reCaptchaRef} sitekey={'6Le2H7YnAAAAADT2wHAfyWsbUIYS6_gdG8d47IRu'} onChange={handleCaptchaChange} asyncScriptOnLoad={asyncScriptOnLoad} />
                 </div>

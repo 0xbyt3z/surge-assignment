@@ -3,6 +3,8 @@ FROM node:18-alpine
 WORKDIR /src
 
 COPY . .
-RUN npm install --production
+RUN npm ci
 RUN npm run build
-CMD [ "npm" ,"run","start" ]
+# CMD [ "npm" ,"run","start" ]
+RUN npm run start
+RUN npm run test
