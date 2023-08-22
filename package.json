@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "playwright test",
+    "test": "dotenv -e .env.local -- playwright test",
+    "db:generate": "dotenv -e .env.local -- yarn prisma generate --schema=./prisma/dev.prisma",
     "db:push": "dotenv -e .env.local -- npx prisma db push --schema=./prisma/dev.prisma",
     "studio": "dotenv -e .env.local -- npx prisma studio --browser none --schema=./prisma/dev.prisma"
   },
