@@ -28,7 +28,7 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          BASE_URL: "https://https://surgeintern.vercel.app/"
+          BASE_URL: "https://surgeintern.vercel.app/"
       - uses: actions/upload-artifact@v2
         if: always()
         with:
