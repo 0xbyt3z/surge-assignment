@@ -30,3 +30,5 @@ I faced to challanges during development process. They are,
 - **CI/CD pipelines** - I am used to  deploy application on hosting services such as Vercel and Netlify using automatic deployment which does not require to write manual scripts. But i manage to work with Github Actions gaining a sound understanding.
 
 ## my own implementations
+- Infinite Scroll - Cursor based scroll fetch requests posts on demand.
+- Relative Time -  Relative time for posts based on Internationalization API.
