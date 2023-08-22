@@ -17,10 +17,16 @@ function Nav() {
       <div className="sticky top-0 flex h-16 w-full items-center justify-between bg-white">
         <div className="flex h-full w-auto items-center">
           {/* logo */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-x-5">
             {/* I usuallly provide the actual size of the image and resize the image using styling */}
-            <Image src={'/logo/tick-48.svg'} alt="logo" width={48} height={48} className="h-8 w-8" />
-            <span className="ml-2 font-bold tracking-tight">{data.app_name}</span>
+            {/* <Image src={'/logo/tick-48.svg'} alt="logo" width={48} height={48} className="h-8 w-8" />
+            <span className="ml-2 font-bold tracking-tight">{data.app_name}</span> */}
+            <Link href={'/'} className="text-sm">
+              Home
+            </Link>
+            <Link href={'/posts'} className="text-sm">
+              Posts
+            </Link>
           </div>
         </div>
         <div className="flex h-full w-auto items-center">
