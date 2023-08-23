@@ -107,38 +107,6 @@ function ProfilePage() {
         {/* details section */}
         {data && (
           <div className="flex h-auto w-full flex-col pt-10">
-            <Dialog>
-              <DialogTrigger>
-                <div className="mb-10 h-16 w-16 rounded-full bg-gray-300 hover:bg-gray-400">
-                  <Image src={`${session?.user.image}`} alt="" width={64} height={64} className="h-16 w-16 rounded-full" />
-                </div>
-              </DialogTrigger>
-              <DialogContent className="remove-radix-close-icon">
-                <DialogHeader>
-                  {/* form area */}
-                  <form onSubmit={handleSubmit}>
-                    <div className="flex h-auto w-full flex-col">
-                      <Label htmlFor="image-url" className="mb-2">
-                        Image URL
-                      </Label>
-                      <Input required placeholder="Eg: https://images.com/sunset-landscape.png" id="image-url" name="imageUrl" />
-
-                      <div className="mt-5 flex space-x-2">
-                        <Button variant={'outline'} type="submit">
-                          Change
-                        </Button>
-
-                        <DialogClose asChild>
-                          <Button variant={'ghost'} type="button">
-                            Cancel
-                          </Button>
-                        </DialogClose>
-                      </div>
-                    </div>
-                  </form>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
             <div className="mb-5 flex flex-col">
               <span className="text-xs">Full Name</span>
               <span className="text-xl">{data.name}</span>

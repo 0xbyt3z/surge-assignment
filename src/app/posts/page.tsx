@@ -118,24 +118,38 @@ function PostsPage() {
 const TopBar = () => {
   const router = useRouter()
   async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    let isvalid = false
     let t = toast.loading('Please Wait')
-
+    const filetypes = ['png', 'jpeg', 'jpg']
     const data: Partial<z.infer<typeof postSchema>> = {
       url: (document.getElementById('image-url') as HTMLInputElement).value,
     }
+    filetypes.map(i => {
+      if (data.url?.includes(i)) {
+        isvalid = true
+      }
+      console.log(i)
+    })
 
-    const res = await fetch('/api/posts/post', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...data }),
-    }).then(res => res.json())
-
-    if (res.code == 200) {
-      router.refresh()
+    if (!isvalid) {
+      toast.error('Wrong image format', { id: t })
+      return
     } else {
-      toast.error('Something went wrong')
+      const res = await fetch('/api/posts/post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...data }),
+      }).then(res => res.json())
+      console.log(res.code == 200)
+      if (res.code == 200) {
+        location.reload()
+        toast.success('Uploaded', { id: t })
+      } else {
+        toast.error('Something went wrong')
+      }
     }
   }
   return (
